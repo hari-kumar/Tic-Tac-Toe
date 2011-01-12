@@ -3,7 +3,7 @@ class TicTacToe:
         self.grid = ['-','-','-','-','-','-','-','-','-']
         self.available_blocks = [1,2,3,4,5,6,7,8,9]
         self.winning_combos = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
-        self.player_symbol = 'X'
+        self.player_symbol = 'x'
         self.computer_symbol = '0'
         self.dimension = 3
         self.found_winner = False
@@ -45,14 +45,20 @@ class TicTacToe:
         block = int(block)
         if self.isValidMove(block):
             self.grid[block-1] = self.player_symbol
+            self.available_blocks.remove(block)
             return True
         return False
             
     def moveComputer(self):
         """ Calculates and makes the computer's move. Returns True if the computer move was successful, else False"""
-        block = 5
+        # lOGIC AS PER THE STRATEGY MENTIONED IN WIKIPEDIA. http://en.wikipedia.org/wiki/Tic-tac-toe
+        # 1.If the player has two in a row, play the third to get three in a row.
+        
+
+
         if self.isValidMove(block):
             self.grid[block-1] = self.computer_symbol
+            self.available_blocks.remove(block)
             return True
         return False
 
@@ -78,27 +84,28 @@ while True:
 
 # Player plays first
 if player_choice == "yes":
-    temp = raw_input("Please enter your choice of symbol (X/0): ")
+    temp = raw_input("Please enter your choice of symbol (x/0): ")
     temp = str(temp).lower()
     if temp == "x":
-        t.player_symbol = "X"
+        t.player_symbol = "x"
         t.computer_symbol = "0"
     elif temp in ["0","o"]:
         t.player_symbol = "0"
-        t.computer_symbol = "X"
+        t.computer_symbol = "x"
     while not t.isFullGrid() and not t.found_winner:
-        t.display()
         t.movePlayer()
         t.display()
         t.moveComputer()
+        print "Computer made its move"
         t.display()
 
 # Computer plays first
 elif player_choice == "no":
     while not t.isFullGrid() and not t.found_winner:
-        t.computer_symbol = "X"
+        t.computer_symbol = "x"
         t.player_symbol = "0"
         t.moveComputer()
+        print "Computer made its move"
         t.display()
         t.movePlayer()
         t.display()
