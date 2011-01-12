@@ -6,6 +6,7 @@ class TicTacToe:
         self.player_symbol = 'X'
         self.computer_symbol = '0'
         self.dimension = 3
+        self.found_winner = False
 
     def display(self):
         """ Displays the current grid"""
@@ -29,33 +30,73 @@ class TicTacToe:
                 return True
         return False
 
-    def isEmptyGrid(self):
-        """ Checks if the grid is empty or not """
+    def isFullGrid(self):
+        """ Checks if the grid is full or not """
         try:
-            # If any "-" exists in the grid, it is not empty
+            # If any "-" exists in the grid, it is not full
             temp = self.grid.index("-")
             return False
         except:
             return True
 
-    def movePlayer(self,block):
-        """ Makes the player's move. Returns True if the player move was successful, else False"""
+    def movePlayer(self):
+        """ Asks and makes the player's move. Returns True if the player move was successful, else False"""
+        block = raw_input("Enter block number: ")
         if self.isValidMove(block):
             self.grid[block-1] = self.player_symbol
             return True
         return False
             
-    def moveComputer(self, block):
-        """ Makes the computer's move. Returns True if the computer move was successful, else False"""
+    def moveComputer(self):
+        """ Calculates and makes the computer's move. Returns True if the computer move was successful, else False"""
         if self.isValidMove(block):
             self.grid[block-1] = self.computer_symbol
             return True
         return False
 
-    def calculateComputerMove(self):
-        return
-
 
 t = TicTacToe()
-t.movePlayer(2)
-t.display()
+# Game begins
+while True:
+    player_choice = raw_input("Do you want to play first (yes/no/exit): ")
+    player_choice = player_choice.lower().strip()
+
+    if player_choice == "yes":
+        print "You play first"
+        break
+    elif player_choice == "no":
+        print "You play second"
+        break
+    elif player_choice == "exit":
+        print "Game Terminated."
+        break
+    else:
+        print "Invalid Choice!!!"
+        pass
+
+# Player plays first
+if player_choice == "yes":
+    while not t.isFullGrid() and not t.found_winner:
+        temp = raw_input("Please enter your choice of symbol (X/0): ")
+        temp = str(temp).lower()
+        if temp == "x":
+            t.player_symbol = "X"
+            t.computer_symbol = "0"
+        elif temp in ["0","o"]:
+            t.player_symbol = "0"
+            t.computer_symbol = "X"
+        t.movePlayer()
+        t.moveComputer()
+
+# Computer plays first
+elif player_choice == "no":
+    while not t.isFullGrid() and not t.found_winner:
+        t.computer_symbol = "X"
+        t.player_symbol = "0"
+        
+        t.moveComputer()
+        t.movePlayer()
+else:
+    print "Game Terminated."
+          
+
