@@ -22,7 +22,7 @@ class TicTacToe:
     def issValidMove(self, block):
         if block >9 or block < 1:
             return False
-        if self.board[block-1] == "-":
+        if self.grid[block-1] == "-":
                 return True
         return False
 
