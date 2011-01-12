@@ -8,6 +8,7 @@ class TicTacToe:
         self.dimension = 3
 
     def display(self):
+        """ Displays the current grid"""
         import sys
         increment = 0
         while increment < 3:
@@ -21,6 +22,7 @@ class TicTacToe:
         sys.stdout.write("\n")
 
     def isValidMove(self, block):
+        """ Checks if the current move is a valid move or not """
         if block >9 or block < 1:
             return False
         if self.grid[block-1] == "-":
@@ -28,6 +30,7 @@ class TicTacToe:
         return False
 
     def isEmptyGrid(self):
+        """ Checks if the grid is empty or not """
         try:
             # If any "-" exists in the grid, it is not empty
             temp = self.grid.index("-")
@@ -36,12 +39,21 @@ class TicTacToe:
             return True
 
     def movePlayer(self,block):
-        """ Returns True if the move was successful, else False"""
+        """ Makes the player's move. Returns True if the player move was successful, else False"""
         if self.isValidMove(block):
             self.grid[block-1] = self.player_symbol
             return True
         return False
             
+    def moveComputer(self, block):
+        """ Makes the computer's move. Returns True if the computer move was successful, else False"""
+        if self.isValidMove(block):
+            self.grid[block-1] = self.computer_symbol
+            return True
+        return False
+
+    def calculateComputerMove(self):
+        return
 
 
 t = TicTacToe()
