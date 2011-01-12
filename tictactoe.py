@@ -52,14 +52,35 @@ class TicTacToe:
     def moveComputer(self):
         """ Calculates and makes the computer's move. Returns True if the computer move was successful, else False"""
         # lOGIC AS PER THE STRATEGY MENTIONED IN WIKIPEDIA. http://en.wikipedia.org/wiki/Tic-tac-toe
+
         # 1.If the player has two in a row, play the third to get three in a row.
-        
+        computer_symbol_list = [i+1 for i,symbol in enumerate(self.grid) if symbol == self.computer_symbol]
+        for combo in self.winning_combos:
+            intersect_symbol = list(set(combo).intersection(set(computer_symbol_list)))
+            intersect_available =  list(set(combo).intersection(set(self.available_blocks)))
+            if len(intersect) == 2 and len(intersect_available) > 0:
+                difference_symbol = list(set(combo) - set(intersect_symbol))[0]
+                self.grid[difference_symbol - 1] = self.computer_symbol
+                self.available_blocks.remove(difference_symbol)
+                return True
+            else:
+                pass
 
 
-        if self.isValidMove(block):
-            self.grid[block-1] = self.computer_symbol
-            self.available_blocks.remove(block)
-            return True
+        # 2. If the opponent has two in a row, play the third to block them.
+        player_symbol_list = [i+1 for i,symbol in enumerate(self.grid) if symbol == self.player_symbol]
+        for combo in self.winning_combos:
+            intersect_symbol = list(set(combo).intersection(set(player_symbol_list)))
+            intersect_available =  list(set(combo).intersection(set(self.available_blocks)))
+            if len(intersect) == 2 and len(intersect_available) > 0:
+                difference_symbol = list(set(combo) - set(intersect_symbol))[0]
+                self.grid[difference_symbol - 1] = self.player_symbol
+                self.available_blocks.remove(difference_symbol)
+                return True
+            else:
+                pass
+
+
         return False
 
 
