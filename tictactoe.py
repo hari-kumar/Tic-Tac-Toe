@@ -42,6 +42,7 @@ class TicTacToe:
     def movePlayer(self):
         """ Asks and makes the player's move. Returns True if the player move was successful, else False"""
         block = raw_input("Enter block number: ")
+        block = int(block)
         if self.isValidMove(block):
             self.grid[block-1] = self.player_symbol
             return True
@@ -49,6 +50,7 @@ class TicTacToe:
             
     def moveComputer(self):
         """ Calculates and makes the computer's move. Returns True if the computer move was successful, else False"""
+        block = 5
         if self.isValidMove(block):
             self.grid[block-1] = self.computer_symbol
             return True
@@ -76,26 +78,30 @@ while True:
 
 # Player plays first
 if player_choice == "yes":
+    temp = raw_input("Please enter your choice of symbol (X/0): ")
+    temp = str(temp).lower()
+    if temp == "x":
+        t.player_symbol = "X"
+        t.computer_symbol = "0"
+    elif temp in ["0","o"]:
+        t.player_symbol = "0"
+        t.computer_symbol = "X"
     while not t.isFullGrid() and not t.found_winner:
-        temp = raw_input("Please enter your choice of symbol (X/0): ")
-        temp = str(temp).lower()
-        if temp == "x":
-            t.player_symbol = "X"
-            t.computer_symbol = "0"
-        elif temp in ["0","o"]:
-            t.player_symbol = "0"
-            t.computer_symbol = "X"
+        t.display()
         t.movePlayer()
+        t.display()
         t.moveComputer()
+        t.display()
 
 # Computer plays first
 elif player_choice == "no":
     while not t.isFullGrid() and not t.found_winner:
         t.computer_symbol = "X"
         t.player_symbol = "0"
-        
         t.moveComputer()
+        t.display()
         t.movePlayer()
+        t.display()
 else:
     print "Game Terminated."
           
