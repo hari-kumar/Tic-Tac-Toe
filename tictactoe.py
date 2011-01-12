@@ -19,5 +19,15 @@ class TicTacToe:
             increment+=1 
         sys.stdout.write("\n")
 
+    def issValidMove(self, block):
+        if block >9 or block < 1:
+            return False
+        if self.board[block-1] == "-":
+                return True
+        return False
+
+
+
+
 t = TicTacToe()
 t.display()
