@@ -1,3 +1,7 @@
+# Tic Tac Toe
+# Hari Kumar
+# hariprasad@gatech.edu
+
 from random import choice
 import sys
 
