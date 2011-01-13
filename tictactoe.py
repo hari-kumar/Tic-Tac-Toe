@@ -68,7 +68,8 @@ class TicTacToe:
     def moveComputer(self):
         """ Calculates and makes the computer's move. Returns True if the computer move was successful, else False"""
         # lOGIC AS PER THE STRATEGY MENTIONED IN WIKIPEDIA. http://en.wikipedia.org/wiki/Tic-tac-toe
-
+       
+        
         # 1.If the player has two in a row, play the third to get three in a row.
         computer_symbol_list = [i+1 for i,symbol in enumerate(self.grid) if symbol == self.computer_symbol]
         for combo in self.winning_combos:
@@ -97,61 +98,87 @@ class TicTacToe:
                 pass
 
         # 3.  Create an opportunity where you can win in two ways.
-      
-        # 4. Block opponent's fork
-
         
-
-        
-        for corner in [6,8]:
-            print "before corner case"
-            print self.grid[corner], self.grid[8%corner]
-            if self.grid[corner] == self.player_symbol and self.grid[8%corner] == self.player_symbol and self.grid[4] == self.computer_symbol:
-                print "blocking fork"
-                possible_mid = list(set(self.available_blocks).intersection([2,4,6,8]))
-                try:
-                    posn = choice(possible_mid)
-                except:
-                    posn = choice(self.available_blocks)
-                self.grid[posn-1] = self.computer_symbol
-                self.available_blocks.remove(posn)
-                return True
-
+        for corner_pair in [[0,8],[2,6]]:
+            if self.grid[corner_pair[0]] == self.grid[corner_pair[1]] == self.computer_symbol and self.grid[4]==self.player_symbol:
+                if self.grid[(corner_pair[0]-2)%8] == self.player_symbol:
+                    posn = (corner_pair[0]+2)%8
+                    if self.grid[posn] == "-":
+                        self.grid[posn] = self.computer_symbol
+                        self.available_blocks.remove(posn+1)
+                elif self.grid[ (corner_pair[0]+2)%8 ] == self.player_symbol:
+                    posn = (corner_pair[0]-2)%8
+                    if self.grid[posn] == "-":
+                        self.grid[posn] = self.computer_symbol
+                        self.available_blocks.remove(posn+1)
+                        return True
+                    
         for corner in [0,2,6,8]:
-            if self.grid[corner] != "-" and self.grid[8-corner] != "-":
+            if self.grid[corner] == self.grid[4] == self.computer_symbol and self.grid[8-corner] == self.player_symbol:
+                possible_corners = list(set([0,2,6,8]) - set([corner, 8-corner]))
+                for possible_corner in possible_corners:
+                    if self.grid[(corner + possible_corner)/2] == self.player_symbol:
+                        posn = (corner + (8-possible_corner))/2
+                        if self.grid[posn] == "-":
+                            self.grid[posn] = self.computer_symbol
+                            self.available_blocks.remove(posn+1)
+                            return True
+                        
+        # 4. Block opponent's fork
+        
+        for corner_pair in [[0,8],[2,6]]:
+            if self.grid[corner_pair[0]] == self.grid[corner_pair[1]] == self.player_symbol and self.grid[4]==self.computer_symbol:
                 possible_mid = list(set(self.available_blocks).intersection([2,4,6,8]))
-                possible_corner = list(set(self.available_blocks).intersection([1,3,7,9]))
-                try:
-                    posn = choice(possible_corner)
-                except:
-                    posn = choice(self.available_blocks)
-                print "Corner Case aggresive"
+                posn = possible_mid[0]
                 self.grid[posn-1] = self.computer_symbol
                 self.available_blocks.remove(posn)
                 return True
-           
-            if self.grid[corner] == "-":
-                if self.grid[8-corner] == "-":
-                    self.grid[8-corner] = self.computer_symbol
-                    self.available_blocks.remove(9-corner)
-                    return True 
-
-
         
+        for corner in [0,2,6,8]:
+            if self.grid[corner] == self.grid[4] == self.player_symbol and self.grid[8-corner] == self.computer_symbol:
+                possible_corners = list(set([0,2,6,8]) - set([corner, 8-corner]))
+                for possible_corner in possible_corners:
+                    if self.grid[possible_corner] == "-":
+                        posn = possible_corner
+                        self.grid[posn] = self.computer_symbol
+                        self.available_blocks.remove(posn+1)
+                        return True
+        
+        # 5. Play the center
         if self.grid[4] == "-":
-            print "Center Case"
             self.grid[4] = self.computer_symbol
             self.available_blocks.remove(5)
             return True
-
-        if self.grid[corner] == "-":
-                if self.grid[8-corner] == "-":
-                    self.grid[8-corner] = self.computer_symbol
-                    self.available_blocks.remove(9-corner)
-                    return True
-
+            
+        # 6. Opposite corner
+        for corner in [0,2,6,8]:
+            if self.grid[corner] == self.player_symbol and self.grid[8-corner] == "-":
+                posn = 8-corner
+                self.grid[posn] = self.computer_symbol
+                self.available_blocks.remove(posn+1)
+                return True
+        
+        # 7. Empty Corner
+        for corner in [0,2,6,8]:
+            if self.grid[corner] == "-":
+                posn = corner
+                self.grid[posn] = self.computer_symbol
+                self.available_blocks.remove(posn+1)
+                return True
+                
+        # 8. Empty Side
+        for side in [1,3,5,7]:
+            if self.grid[side] == "-":
+                posn = side
+                self.grid[posn] = self.computer_symbol
+                self.available_blocks.remove(posn+1)
+                return True
+        
+        
         
         return False
+        
+        
 
 t = TicTacToe()
 # Game begins
