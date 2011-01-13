@@ -1,3 +1,5 @@
+from random import choice
+
 class TicTacToe:
     def __init__(self):
         self.grid = ['-','-','-','-','-','-','-','-','-']
@@ -37,7 +39,21 @@ class TicTacToe:
             temp = self.grid.index("-")
             return False
         except:
+            print "Game Draw!"
             return True
+
+    def gotWinner(self):
+        """ Checks if the current grid snapshot has a winner or not"""
+        for combo in self.winning_combos:
+            if self.grid[combo[0]-1]==self.grid[combo[1]-1]==self.grid[combo[2]-1]==self.player_symbol:
+                print "You have won the game!"
+                return True
+            if self.grid[combo[0]-1]==self.grid[combo[1]-1]==self.grid[combo[2]-1]==self.computer_symbol:
+                print "You have lost the game!"
+                return True
+        return False
+
+        
 
     def movePlayer(self):
         """ Asks and makes the player's move. Returns True if the player move was successful, else False"""
@@ -58,7 +74,7 @@ class TicTacToe:
         for combo in self.winning_combos:
             intersect_symbol = list(set(combo).intersection(set(computer_symbol_list)))
             intersect_available =  list(set(combo).intersection(set(self.available_blocks)))
-            if len(intersect) == 2 and len(intersect_available) > 0:
+            if len(intersect_symbol) == 2 and len(intersect_available) > 0:
                 difference_symbol = list(set(combo) - set(intersect_symbol))[0]
                 self.grid[difference_symbol - 1] = self.computer_symbol
                 self.available_blocks.remove(difference_symbol)
@@ -72,17 +88,70 @@ class TicTacToe:
         for combo in self.winning_combos:
             intersect_symbol = list(set(combo).intersection(set(player_symbol_list)))
             intersect_available =  list(set(combo).intersection(set(self.available_blocks)))
-            if len(intersect) == 2 and len(intersect_available) > 0:
+            if len(intersect_symbol) == 2 and len(intersect_available) > 0:
                 difference_symbol = list(set(combo) - set(intersect_symbol))[0]
-                self.grid[difference_symbol - 1] = self.player_symbol
+                self.grid[difference_symbol - 1] = self.computer_symbol
                 self.available_blocks.remove(difference_symbol)
                 return True
             else:
                 pass
 
+        # 3.  Create an opportunity where you can win in two ways.
+      
+        # 4. Block opponent's fork
 
+        
+
+        
+        for corner in [6,8]:
+            print "before corner case"
+            print self.grid[corner], self.grid[8%corner]
+            if self.grid[corner] == self.player_symbol and self.grid[8%corner] == self.player_symbol and self.grid[4] == self.computer_symbol:
+                print "blocking fork"
+                possible_mid = list(set(self.available_blocks).intersection([2,4,6,8]))
+                try:
+                    posn = choice(possible_mid)
+                except:
+                    posn = choice(self.available_blocks)
+                self.grid[posn-1] = self.computer_symbol
+                self.available_blocks.remove(posn)
+                return True
+
+        for corner in [0,2,6,8]:
+            if self.grid[corner] != "-" and self.grid[8-corner] != "-":
+                possible_mid = list(set(self.available_blocks).intersection([2,4,6,8]))
+                possible_corner = list(set(self.available_blocks).intersection([1,3,7,9]))
+                try:
+                    posn = choice(possible_corner)
+                except:
+                    posn = choice(self.available_blocks)
+                print "Corner Case aggresive"
+                self.grid[posn-1] = self.computer_symbol
+                self.available_blocks.remove(posn)
+                return True
+           
+            if self.grid[corner] == "-":
+                if self.grid[8-corner] == "-":
+                    self.grid[8-corner] = self.computer_symbol
+                    self.available_blocks.remove(9-corner)
+                    return True 
+
+
+        
+        if self.grid[4] == "-":
+            print "Center Case"
+            self.grid[4] = self.computer_symbol
+            self.available_blocks.remove(5)
+            return True
+
+        if self.grid[corner] == "-":
+                if self.grid[8-corner] == "-":
+                    self.grid[8-corner] = self.computer_symbol
+                    self.available_blocks.remove(9-corner)
+                    return True
+
+        
         return False
-
 
 t = TicTacToe()
 # Game begins
@@ -113,23 +182,36 @@ if player_choice == "yes":
     elif temp in ["0","o"]:
         t.player_symbol = "0"
         t.computer_symbol = "x"
-    while not t.isFullGrid() and not t.found_winner:
-        t.movePlayer()
-        t.display()
-        t.moveComputer()
-        print "Computer made its move"
-        t.display()
+    while True:
+        if not t.isFullGrid() and not t.gotWinner():
+            t.movePlayer()
+            t.display()
+        else:
+            break
+        if not t.isFullGrid() and not t.gotWinner():
+            t.moveComputer()
+            print "Computer made its move"
+            t.display()
+        else:
+            break
+            
 
 # Computer plays first
 elif player_choice == "no":
-    while not t.isFullGrid() and not t.found_winner:
-        t.computer_symbol = "x"
-        t.player_symbol = "0"
-        t.moveComputer()
-        print "Computer made its move"
-        t.display()
-        t.movePlayer()
-        t.display()
+    t.computer_symbol = "x" 
+    t.player_symbol = "0"
+    while True:
+        if not t.isFullGrid() and not t.gotWinner():
+            t.moveComputer()
+            print "Computer made its move"
+            t.display()
+        else:
+            break
+        if not t.isFullGrid() and not t.gotWinner():
+            t.movePlayer()
+            t.display()
+        else:
+            break
 else:
     print "Game Terminated."
           
