@@ -1,4 +1,5 @@
 from random import choice
+import sys
 
 class TicTacToe:
     def __init__(self):
@@ -209,6 +210,10 @@ if player_choice == "yes":
     elif temp in ["0","o"]:
         t.player_symbol = "0"
         t.computer_symbol = "x"
+    else:
+        print "Invalid Symbol. Game Terminated! "
+        sys.exit(1)
+        
     while True:
         if not t.isFullGrid() and not t.gotWinner():
             t.movePlayer()
